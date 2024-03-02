@@ -2,14 +2,14 @@
 DROP TABLE IF EXISTS OLYMPICS_HISTORY;
 CREATE TABLE IF NOT EXISTS OLYMPICS_HISTORY
 (
-id				INT,
+id		INT,
 name		VARCHAR,
-sex			VARCHAR,
-age			VARCHAR,
+sex		VARCHAR,
+age		VARCHAR,
 height		VARCHAR,
 weight		VARCHAR,
 team		VARCHAR,
-noc			VARCHAR,
+noc		VARCHAR,
 games		VARCHAR,
 year		INT,
 season		VARCHAR,
@@ -22,7 +22,7 @@ medal		VARCHAR
 DROP TABLE IF EXISTS OLYMPICS_HISTORY_NOC_REGIONS;
 CREATE TABLE IF NOT EXISTS OLYMPICS_HISTORY_NOC_REGIONS
 (
-noc			VARCHAR,
+noc		VARCHAR,
 region		VARCHAR
 );
 
@@ -32,32 +32,32 @@ select * from OLYMPICS_HISTORY_NOC_REGIONS;
 -- 1. Identify the sport which was played in all summer olympics
 	
 with t1 as (
-		select count(distinct games) as total_summer_games
-		from OLYMPICS_HISTORY
-		where season = 'Summer'),
+	select count(distinct games) as total_summer_games
+	from OLYMPICS_HISTORY
+	where season = 'Summer'),
 	t2 as (
-		select distinct sport, games
-		from OLYMPICS_HISTORY
-		where season = 'Summer'
-		order by games),
+	select distinct sport, games
+	from OLYMPICS_HISTORY
+	where season = 'Summer'
+	order by games),
 	t3 as (
-		select sport, count(games) as no_of_games
-		from t2
-		group by sport)
+	select sport, count(games) as no_of_games
+	from t2
+	group by sport)
 select * 
 from t3
 join t1 on t1.total_summer_games = t3.no_of_games;
 
 -- 2. Fetch top 5 athletes who have won the most gold medals
 with t1 as (
-		select name, count(1) as total_medals
-		from OLYMPICS_HISTORY
-		where medal = 'Gold'
-		group by name
-		order by count(1) desc),
+	select name, count(1) as total_medals
+	from OLYMPICS_HISTORY
+	where medal = 'Gold'
+	group by name
+	order by count(1) desc),
 t2 as (
-		select *, dense_rank() over(order by total_medals desc) as rnk
-		from t1
+	select *, dense_rank() over(order by total_medals desc) as rnk
+	from t1
 )
 select * 
 from t2
